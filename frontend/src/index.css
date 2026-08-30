@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #060a10;
+}
+
+::selection {
+  background: #4affc4;
+  color: #06120d;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-14px) rotate(var(--r, 0deg));
+  }
+}
+.float-card {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+.scanline::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, rgba(74, 255, 196, 0.05), transparent);
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+}
+
+.grid-bg {
+  background-image: linear-gradient(rgba(74, 255, 196, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 255, 196, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #24303f;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink,
+  .float-card,
+  .scanline::after {
+    animation: none !important;
+  }
+}
