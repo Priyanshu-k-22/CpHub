@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Navbar from "./components/Navbar.jsx";
 import Hero from "./components/Hero.jsx";
 import ClubIntro from "./components/ClubIntro.jsx";
@@ -16,10 +18,14 @@ import Join from "./components/Join.jsx";
 import Contact from "./components/Contact.jsx";
 import Footer from "./components/Footer.jsx";
 
-export default function App() {
+import Login from "./components/auth/Login.jsx";
+import Register from "./components/auth/Register.jsx";
+
+const Home = () => {
   return (
     <div className="min-h-screen bg-[#060A10] font-body text-[#EDF2F7] antialiased">
       <Navbar />
+
       <main>
         <Hero />
         <ClubIntro />
@@ -36,7 +42,23 @@ export default function App() {
         <Join />
         <Contact />
       </main>
+
       <Footer />
     </div>
+  );
+};
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Existing CpHub website */}
+        <Route path="/" element={<Home />} />
+
+        {/* Authentication */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
