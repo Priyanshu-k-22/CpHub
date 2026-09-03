@@ -10,10 +10,15 @@ import Join from "../components/Join.jsx";
 import Contact from "../components/Contact.jsx";
 import Footer from "../components/Footer.jsx";
 
+import CodeBackground from "../components/background/CodeBackground.jsx";
+
+
 const Home = () => {
     return (
         <div className="min-h-screen bg-[#060A10] font-body text-[#EDF2F7] antialiased">
-            <Navbar />
+            <CodeBackground variant="home"/>
+            <div className="relative z-10">
+                <Navbar />
 
             <main>
                 <Hero />
@@ -26,6 +31,7 @@ const Home = () => {
             </main>
 
             <Footer />
+            </div>
         </div>
     );
 };

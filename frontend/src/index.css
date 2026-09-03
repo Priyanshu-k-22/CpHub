@@ -81,3 +81,53 @@ body {
     animation: none !important;
   }
 }
+
+@keyframes floatCode {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(var(--rotate));
+    }
+
+    25% {
+        transform: translate3d(12px, -8px, 0) rotate(var(--rotate));
+    }
+
+    50% {
+        transform: translate3d(20px, 4px, 0) rotate(var(--rotate));
+    }
+
+    75% {
+        transform: translate3d(8px, 14px, 0) rotate(var(--rotate));
+    }
+
+    100% {
+        transform: translate3d(-10px, 6px, 0) rotate(var(--rotate));
+    }
+}
+
+@keyframes fragmentFloat {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(var(--rotate));
+    }
+
+    50% {
+        transform: translate3d(-8px, 12px, 0) rotate(var(--rotate));
+    }
+
+    100% {
+        transform: translate3d(10px, -8px, 0) rotate(var(--rotate));
+    }
+}
+
+@keyframes terminalFloat {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform: translate3d(8px, -6px, 0);
+    }
+
+    100% {
+        transform: translate3d(-6px, 8px, 0);
+    }
+}
