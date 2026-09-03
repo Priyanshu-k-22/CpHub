@@ -1,16 +1,21 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { loginUser } from "../../api/auth.api";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 import AuthLayout from "./AuthLayout.jsx";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { checkAuth } = useAuth();
   const [formData, setFormData] = useState({
     emailOrUsername: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,15 +26,41 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Login:", formData);
-  };
+    try {
+        setLoading(true);
+
+        const response = await loginUser({
+            email: formData.emailOrUsername,
+            password: formData.password
+        });
+
+        console.log("Login successful:", response);
+
+        await checkAuth();
+
+        navigate("/dashboard");
+    } catch (error) {
+        console.error(
+            "Login failed:",
+            error.response?.data || error
+        );
+
+        setLoading(false);
+    }
+};
 
   return (
     <AuthLayout mode="login">
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form
+        onSubmit={handleSubmit}
+        className={`space-y-5 transition-opacity duration-200 ${loading
+            ? "opacity-50 pointer-events-none"
+            : "opacity-100"
+          }`}
+      >
         {/* Email / Username */}
         <div>
           <label
@@ -43,6 +74,7 @@ const Login = () => {
             id="emailOrUsername"
             name="emailOrUsername"
             type="text"
+            disabled={loading}
             value={formData.emailOrUsername}
             onChange={handleChange}
             placeholder="you@example.com"
@@ -73,6 +105,7 @@ const Login = () => {
 
             <button
               type="button"
+              disabled={loading}
               className="font-mono text-[10px] text-[#556275] transition hover:text-[#4AFFC4]"
             >
               forgot_password?
@@ -83,6 +116,7 @@ const Login = () => {
             <input
               id="password"
               name="password"
+              disabled={loading}
               type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleChange}
@@ -133,11 +167,20 @@ const Login = () => {
             hover:bg-transparent hover:text-[#4AFFC4]
           "
         >
-          sign_in
-          <ArrowRight
-            size={15}
-            className="transition-transform group-hover:translate-x-1"
-          />
+          {loading ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#06120D] border-t-transparent" />
+              signing_in...
+            </>
+          ) : (
+            <>
+              sign_in
+              <ArrowRight
+                size={15}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </>
+          )}
         </button>
       </form>
 

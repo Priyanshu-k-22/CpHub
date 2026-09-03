@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { registerUser } from "../../api/auth.api";
 
 import AuthLayout from "./AuthLayout.jsx";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -13,6 +15,7 @@ const Register = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,20 +26,43 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      console.log("Passwords do not match");
-      return;
+        console.log("Passwords do not match");
+        return;
     }
 
-    console.log("Register:", formData);
-  };
+    try {
+        setLoading(true);
+
+        const response = await registerUser({
+            username: formData.username,
+            email: formData.email,
+            password: formData.password
+        });
+
+        console.log("Register successful:", response);
+
+        navigate("/");
+    } catch (error) {
+        console.error(
+            "Register failed:",
+            error.response?.data || error
+        );
+
+        setLoading(false);
+    }
+};
 
   return (
     <AuthLayout mode="register">
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form
+        onSubmit={handleSubmit}
+        className={`space-y-5 transition-opacity duration-200 ${loading ? "opacity-50 pointer-events-none" : "opacity-100"
+          }`}
+      >
         {/* Username */}
         <div>
           <label
@@ -182,6 +208,7 @@ const Register = () => {
         {/* Submit */}
         <button
           type="submit"
+          disabled={loading}
           className="
             group flex w-full items-center justify-center gap-2
             rounded-md border border-[#4AFFC4]
@@ -192,11 +219,20 @@ const Register = () => {
             hover:bg-transparent hover:text-[#4AFFC4]
           "
         >
-          create_account
-          <ArrowRight
+          {loading ? (
+    <>
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#06120D] border-t-transparent" />
+        creating_account...
+    </>
+) : (
+    <>
+        create_account
+        <ArrowRight
             size={15}
             className="transition-transform group-hover:translate-x-1"
-          />
+        />
+    </>
+)}
         </button>
       </form>
 
