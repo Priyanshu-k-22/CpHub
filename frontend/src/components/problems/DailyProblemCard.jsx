@@ -12,9 +12,6 @@ const PLATFORM_STYLES = {
 
     AtCoder:
         "bg-red-400/10 text-red-400 border-red-400/20",
-
-    HackerRank:
-        "bg-green-400/10 text-green-400 border-green-400/20",
 };
 
 const getPlatformStyle = (platform) => {
@@ -40,25 +37,7 @@ const getDifficultyStyle = (difficulty) => {
     return "bg-[#111923] text-[#718096]";
 };
 
-const formatDate = (dateValue) => {
-    if (!dateValue) {
-        return "";
-    }
-
-    const date = new Date(dateValue);
-
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    return new Intl.DateTimeFormat("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    }).format(date);
-};
-
-const ProblemHistoryCard = ({ problem }) => {
+const DailyProblemCard = ({ problem }) => {
     const platform =
         problem.platform || "Unknown";
 
@@ -84,28 +63,23 @@ const ProblemHistoryCard = ({ problem }) => {
         topics[0] ||
         "";
 
-    const problemTitle =
-        problem.title ||
-        problem.name ||
-        "Untitled Problem";
-
     return (
         <Link
             to={`/problems/${problem._id}`}
-            className="group block rounded-xl border border-[#1C2734] bg-[#0A1018] px-4 py-3 transition hover:border-[#2C3D50] hover:bg-[#0C131C]"
+            className="group block min-h-[145px] rounded-xl border border-[#1C2734] bg-[#0A1018] p-5 transition duration-200 hover:border-[#4AFFC4]/30 hover:bg-[#0C131C]"
         >
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex h-full flex-col justify-between gap-5">
 
-                {/* LEFT */}
+                {/* TOP */}
 
-                <div className="min-w-0 flex-1">
+                <div>
 
                     <div className="flex min-w-0 flex-wrap items-center gap-2">
 
-                        {/* Problem Name */}
+                        {/* Title */}
 
-                        <h3 className="truncate text-sm font-semibold text-[#EDF2F7] transition group-hover:text-[#4AFFC4] md:text-[15px]">
-                            {problemTitle}
+                        <h3 className="min-w-0 truncate text-[15px] font-semibold text-[#EDF2F7] transition group-hover:text-[#4AFFC4]">
+                            {problem.title}
                         </h3>
 
                         {/* Platform */}
@@ -131,9 +105,10 @@ const ProblemHistoryCard = ({ problem }) => {
                         </span>
                     </div>
 
-                    {/* TOPICS + TAGS */}
 
-                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                    {/* TOPIC + TAGS */}
+
+                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
 
                         {topic && (
                             <span className="text-xs text-[#8B98A9]">
@@ -168,46 +143,36 @@ const ProblemHistoryCard = ({ problem }) => {
                     </div>
                 </div>
 
-                {/* RIGHT */}
 
-                <div className="flex shrink-0 flex-wrap items-center gap-2 lg:justify-end">
+                {/* BOTTOM */}
+
+                <div className="flex items-center justify-between border-t border-[#17212D] pt-3">
 
                     {/* CP → Rating */}
 
                     {category === "CP" &&
-                        rating !== undefined &&
-                        rating !== null && (
-                            <span className="rounded-md bg-blue-400/10 px-2.5 py-1 text-[10px] font-medium text-blue-400">
-                                Rating {rating}
-                            </span>
-                        )}
+                    rating !== undefined &&
+                    rating !== null ? (
+                        <span className="rounded-md bg-blue-400/10 px-2.5 py-1 text-[10px] font-medium text-blue-400">
+                            Rating {rating}
+                        </span>
+                    ) : category === "DSA" &&
+                      difficulty ? (
+                        <span
+                            className={`rounded-md px-2.5 py-1 text-[10px] font-medium ${getDifficultyStyle(
+                                difficulty
+                            )}`}
+                        >
+                            {difficulty}
+                        </span>
+                    ) : (
+                        <span />
+                    )}
 
-                    {/* DSA → Difficulty */}
+                    {/* Solve */}
 
-                    {category === "DSA" &&
-                        difficulty && (
-                            <span
-                                className={`rounded-md px-2.5 py-1 text-[10px] font-medium ${getDifficultyStyle(
-                                    difficulty
-                                )}`}
-                            >
-                                {difficulty}
-                            </span>
-                        )}
-
-                    {/* DATE */}
-
-                    <span className="whitespace-nowrap text-[10px] text-[#556275]">
-                        {formatDate(
-                            problem.dailyDate ||
-                                problem.createdAt
-                        )}
-                    </span>
-
-                    {/* OPEN */}
-
-                    <span className="ml-1 text-[11px] font-medium text-[#4AFFC4] transition group-hover:translate-x-1">
-                        view →
+                    <span className="text-[11px] font-medium text-[#4AFFC4] transition group-hover:translate-x-1">
+                        solve →
                     </span>
                 </div>
             </div>
@@ -215,4 +180,4 @@ const ProblemHistoryCard = ({ problem }) => {
     );
 };
 
-export default ProblemHistoryCard;
+export default DailyProblemCard;

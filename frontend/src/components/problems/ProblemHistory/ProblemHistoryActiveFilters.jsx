@@ -1,87 +1,64 @@
-import React from "react";
+const FILTER_LABELS = {
+    category: "Category",
+    topic: "Topic",
+    tag: "Tag",
+    difficulty: "Difficulty",
+};
 
 const ProblemHistoryActiveFilters = ({
     filters,
     onRemove,
-    onClear
+    onClear,
 }) => {
-
-    const activeFilters = [];
-
-    if (filters.category) {
-        activeFilters.push({
-            key: "category",
-            label: filters.category
-        });
-    }
-
-    if (filters.difficulty) {
-        activeFilters.push({
-            key: "difficulty",
-            label: filters.difficulty
-        });
-    }
-
-    if (filters.topic) {
-        activeFilters.push({
-            key: "topic",
-            label: filters.topic
-        });
-    }
-
-    if (filters.tag) {
-        activeFilters.push({
-            key: "tag",
-            label: `#${filters.tag}`
-        });
-    }
+    const activeFilters = Object.entries(
+        filters
+    ).filter(([, value]) =>
+        Boolean(value)
+    );
 
     if (activeFilters.length === 0) {
         return null;
     }
 
     return (
-        <div className="mt-5">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
 
-            <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-[#556275]">
+                Active:
+            </span>
 
-                <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.15em] text-[#556275]">
-                    active
-                </span>
-
-                {activeFilters.map((filter) => (
-
+            {activeFilters.map(
+                ([key, value]) => (
                     <button
-                        key={filter.key}
+                        key={key}
                         type="button"
                         onClick={() =>
-                            onRemove(filter.key)
+                            onRemove(key)
                         }
-                        className="group flex items-center gap-2 rounded-md border border-[#4AFFC4]/20 bg-[#4AFFC4]/5 px-3 py-1.5 font-mono text-xs text-[#AEB9C7] transition hover:border-[#4AFFC4]/40 hover:text-[#4AFFC4]"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[#263445] bg-[#0d141d] px-2.5 py-1 text-[11px] text-[#aeb9c7] transition hover:border-[#4affc4]/40 hover:text-[#edf2f7]"
                     >
-
                         <span>
-                            {filter.label}
+                            {FILTER_LABELS[key]}:
                         </span>
 
-                        <span className="text-[#556275] group-hover:text-[#4AFFC4]">
+                        <span className="text-[#4affc4]">
+                            {value}
+                        </span>
+
+                        <span className="ml-1 text-[#556275]">
                             ×
                         </span>
-
                     </button>
+                )
+            )}
 
-                ))}
-
-                <button
-                    type="button"
-                    onClick={onClear}
-                    className="ml-1 font-mono text-xs text-[#556275] transition hover:text-red-400"
-                >
-                    clear_all
-                </button>
-
-            </div>
-
+            <button
+                type="button"
+                onClick={onClear}
+                className="text-[11px] text-[#718096] transition hover:text-[#4affc4]"
+            >
+                Clear all
+            </button>
         </div>
     );
 };

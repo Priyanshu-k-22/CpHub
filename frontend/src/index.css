@@ -131,3 +131,23 @@ body {
         transform: translate3d(-6px, 8px, 0);
     }
 }
+
+.filter-select {
+    width: 100%;
+    border: 1px solid #1c2734;
+    border-radius: 0.5rem;
+    background-color: #0d141d;
+    color: #edf2f7;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.filter-select:focus {
+    border-color: rgba(74, 255, 196, 0.5);
+}
+
+.filter-select option {
+    background-color: #0d141d;
+    color: #edf2f7;
+}

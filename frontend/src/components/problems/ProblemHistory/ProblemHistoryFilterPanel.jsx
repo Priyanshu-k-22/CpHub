@@ -1,287 +1,354 @@
-import React from "react";
+import { useEffect } from "react";
 
-const DSA_TOPICS = [
+const CATEGORY_OPTIONS = [
+    {
+        label: "All",
+        value: "",
+    },
+    {
+        label: "DSA",
+        value: "DSA",
+    },
+    {
+        label: "CP",
+        value: "CP",
+    },
+];
+
+const DIFFICULTY_OPTIONS = [
+    {
+        label: "All",
+        value: "",
+    },
+    {
+        label: "Easy",
+        value: "Easy",
+    },
+    {
+        label: "Medium",
+        value: "Medium",
+    },
+    {
+        label: "Hard",
+        value: "Hard",
+    },
+];
+
+const TOPIC_OPTIONS = [
     "Arrays",
     "Strings",
-    "Two Pointer",
-    "Sliding Window",
-    "Binary Search",
     "Linked List",
     "Stack",
     "Queue",
-    "Trees",
+    "Binary Tree",
     "BST",
-    "Heap",
-    "Graph",
-    "Greedy",
+    "Trie",
+    "Sliding Window",
+    "Two Pointers",
+    "Prefix Sum",
+    "Recursion",
     "Backtracking",
-    "DP"
+    "DP",
 ];
 
-const TAGS = [
-    "two-pointer",
-    "sliding-window",
-    "binary-search",
-    "prefix-sum",
-    "hashing",
-    "greedy",
-    "recursion",
-    "backtracking",
-    "dp"
-];
-
-const DIFFICULTIES = [
-    "Easy",
-    "Medium",
-    "Hard"
+const TAG_OPTIONS = [
+    "Array",
+    "String",
+    "Hash Table",
+    "Sorting",
+    "Binary Search",
+    "Tree",
+    "Recursion",
+    "Backtracking",
+    "Greedy",
+    "Prefix Sum",
+    "Sliding Window",
+    "Two Pointers",
 ];
 
 const ProblemHistoryFilterPanel = ({
+    open,
     filters,
     onChange,
-    onClear
+    onClose,
+    onClear,
 }) => {
+    /*
+    |--------------------------------------------------------------------------
+    | Prevent Background Scrolling
+    |--------------------------------------------------------------------------
+    */
+
+    useEffect(() => {
+        if (!open) {
+            return;
+        }
+
+        document.body.style.overflow =
+            "hidden";
+
+        return () => {
+            document.body.style.overflow =
+                "";
+        };
+    }, [open]);
+
+    if (!open) {
+        return null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Update Filter
+    |--------------------------------------------------------------------------
+    */
+
+    const updateFilter = (
+        key,
+        value
+    ) => {
+        onChange((previous) => ({
+            ...previous,
+            [key]: value,
+        }));
+    };
+
     return (
-        <div className="rounded-2xl border border-[#1C2734] bg-[#0A1018] p-5">
+        <div className="fixed inset-0 z-50">
 
-            {/* Header */}
+            {/* =========================================================
+                BACKDROP
+            ========================================================== */}
 
-            <div className="flex items-center justify-between">
+            <button
+                type="button"
+                aria-label="Close filters"
+                onClick={onClose}
+                className="absolute inset-0 cursor-default bg-black/50 backdrop-blur-[2px]"
+            />
 
-                <div>
-                    <p className="font-mono text-xs uppercase tracking-[0.15em] text-[#556275]">
-                        filters
-                    </p>
+            {/* =========================================================
+                DRAWER
+            ========================================================== */}
 
-                    <h2 className="mt-1 text-lg font-semibold text-[#EDF2F7]">
-                        Refine Problems
-                    </h2>
+            <aside className="absolute right-0 top-0 flex h-full w-full max-w-sm flex-col border-l border-[#1c2734] bg-[#080d14] shadow-2xl">
+
+                {/* =====================================================
+                    HEADER
+                ====================================================== */}
+
+                <div className="flex items-center justify-between border-b border-[#1c2734] px-5 py-4">
+
+                    <div>
+                        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#4affc4]">
+                            Refine
+                        </p>
+
+                        <h2 className="mt-1 text-lg font-semibold text-[#edf2f7]">
+                            Filters
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#718096] transition hover:bg-[#111923] hover:text-[#edf2f7]"
+                    >
+                        ×
+                    </button>
                 </div>
 
-                <button
-                    type="button"
-                    onClick={onClear}
-                    className="font-mono text-xs text-[#556275] transition hover:text-[#4AFFC4]"
-                >
-                    clear_all
-                </button>
+                {/* =====================================================
+                    CONTENT
+                ====================================================== */}
 
-            </div>
+                <div className="flex-1 overflow-y-auto px-5 py-5">
 
+                    {/* Category */}
 
-            {/* Category */}
-
-            <div className="mt-6">
-
-                <FilterLabel>
-                    category
-                </FilterLabel>
-
-                <div className="flex flex-wrap gap-2">
-
-                    {[
-                        {
-                            label: "All",
-                            value: ""
-                        },
-                        {
-                            label: "DSA",
-                            value: "DSA"
-                        },
-                        {
-                            label: "CP",
-                            value: "CP"
-                        }
-                    ].map((item) => (
-
-                        <FilterButton
-                            key={
-                                item.value || "all"
+                    <FilterSection label="Category">
+                        <select
+                            value={
+                                filters.category
                             }
-                            active={
-                                filters.category ===
-                                item.value
-                            }
-                            onClick={() =>
-                                onChange(
+                            onChange={(event) =>
+                                updateFilter(
                                     "category",
-                                    item.value
+                                    event.target
+                                        .value
                                 )
                             }
+                            className="filter-select"
                         >
-                            {item.label}
-                        </FilterButton>
+                            {CATEGORY_OPTIONS.map(
+                                (option) => (
+                                    <option
+                                        key={
+                                            option.value ||
+                                            "all"
+                                        }
+                                        value={
+                                            option.value
+                                        }
+                                    >
+                                        {
+                                            option.label
+                                        }
+                                    </option>
+                                )
+                            )}
+                        </select>
+                    </FilterSection>
 
-                    ))}
+                    {/* DSA Topic */}
 
-                </div>
-
-            </div>
-
-
-            {/* Difficulty */}
-
-            <div className="mt-6">
-
-                <FilterLabel>
-                    difficulty
-                </FilterLabel>
-
-                <div className="flex flex-wrap gap-2">
-
-                    {[
-                        {
-                            label: "All",
-                            value: ""
-                        },
-                        ...DIFFICULTIES.map(
-                            (difficulty) => ({
-                                label: difficulty,
-                                value: difficulty
-                            })
-                        )
-                    ].map((item) => (
-
-                        <FilterButton
-                            key={
-                                item.value || "all"
+                    <FilterSection label="DSA Topic">
+                        <select
+                            value={
+                                filters.topic
                             }
-                            active={
-                                filters.difficulty ===
-                                item.value
+                            onChange={(event) =>
+                                updateFilter(
+                                    "topic",
+                                    event.target
+                                        .value
+                                )
                             }
-                            onClick={() =>
-                                onChange(
+                            className="filter-select"
+                        >
+                            <option value="">
+                                All Topics
+                            </option>
+
+                            {TOPIC_OPTIONS.map(
+                                (topic) => (
+                                    <option
+                                        key={topic}
+                                        value={topic}
+                                    >
+                                        {topic}
+                                    </option>
+                                )
+                            )}
+                        </select>
+                    </FilterSection>
+
+                    {/* Tag */}
+
+                    <FilterSection label="Tag">
+                        <select
+                            value={
+                                filters.tag
+                            }
+                            onChange={(event) =>
+                                updateFilter(
+                                    "tag",
+                                    event.target
+                                        .value
+                                )
+                            }
+                            className="filter-select"
+                        >
+                            <option value="">
+                                All Tags
+                            </option>
+
+                            {TAG_OPTIONS.map(
+                                (tag) => (
+                                    <option
+                                        key={tag}
+                                        value={tag}
+                                    >
+                                        {tag}
+                                    </option>
+                                )
+                            )}
+                        </select>
+                    </FilterSection>
+
+                    {/* Difficulty */}
+
+                    <FilterSection label="Difficulty">
+                        <select
+                            value={
+                                filters.difficulty
+                            }
+                            onChange={(event) =>
+                                updateFilter(
                                     "difficulty",
-                                    item.value
+                                    event.target
+                                        .value
                                 )
                             }
+                            className="filter-select"
                         >
-                            {item.label}
-                        </FilterButton>
-
-                    ))}
-
+                            {DIFFICULTY_OPTIONS.map(
+                                (option) => (
+                                    <option
+                                        key={
+                                            option.value ||
+                                            "all"
+                                        }
+                                        value={
+                                            option.value
+                                        }
+                                    >
+                                        {
+                                            option.label
+                                        }
+                                    </option>
+                                )
+                            )}
+                        </select>
+                    </FilterSection>
                 </div>
 
-            </div>
+                {/* =====================================================
+                    FOOTER
+                ====================================================== */}
 
+                <div className="border-t border-[#1c2734] p-5">
 
-            {/* Topic + Tag */}
+                    <button
+                        type="button"
+                        onClick={onClear}
+                        className="w-full rounded-lg border border-[#263445] bg-[#0d141d] px-4 py-2.5 text-sm text-[#aeb9c7] transition hover:border-red-400/30 hover:text-red-400"
+                    >
+                        Clear Filters
+                    </button>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-
-                {filters.category !== "CP" && (
-                    <SelectFilter
-                        label="dsa topic"
-                        value={filters.topic}
-                        onChange={(value) =>
-                            onChange(
-                                "topic",
-                                value
-                            )
-                        }
-                        options={DSA_TOPICS}
-                        placeholder="All topics"
-                    />
-                )}
-
-                <SelectFilter
-                    label="tag"
-                    value={filters.tag}
-                    onChange={(value) =>
-                        onChange(
-                            "tag",
-                            value
-                        )
-                    }
-                    options={TAGS}
-                    placeholder="All tags"
-                />
-
-            </div>
-
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="mt-2 w-full rounded-lg bg-[#4affc4] px-4 py-2.5 text-sm font-semibold text-[#060a10] transition hover:bg-[#68ffd0]"
+                    >
+                        Apply
+                    </button>
+                </div>
+            </aside>
         </div>
     );
 };
 
+/*
+|--------------------------------------------------------------------------
+| Filter Section
+|--------------------------------------------------------------------------
+*/
 
-const FilterLabel = ({
-    children
-}) => {
-    return (
-        <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.15em] text-[#556275]">
-            {children}
-        </p>
-    );
-};
-
-
-const FilterButton = ({
-    children,
-    active,
-    onClick
-}) => {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={`rounded-lg border px-4 py-2 font-mono text-xs transition ${
-                active
-                    ? "border-[#4AFFC4]/40 bg-[#4AFFC4]/10 text-[#4AFFC4]"
-                    : "border-[#1C2734] bg-[#060A10] text-[#556275] hover:border-[#4AFFC4]/20 hover:text-[#AEB9C7]"
-            }`}
-        >
-            {children}
-        </button>
-    );
-};
-
-
-const SelectFilter = ({
+const FilterSection = ({
     label,
-    value,
-    onChange,
-    options,
-    placeholder
+    children,
 }) => {
     return (
-        <div>
-
-            <FilterLabel>
+        <div className="mb-5">
+            <label className="mb-2 block text-xs font-medium text-[#aeb9c7]">
                 {label}
-            </FilterLabel>
+            </label>
 
-            <select
-                value={value}
-                onChange={(event) =>
-                    onChange(
-                        event.target.value
-                    )
-                }
-                className="w-full appearance-none rounded-lg border border-[#1C2734] bg-[#060A10] px-4 py-3 font-mono text-sm text-[#AEB9C7] outline-none transition focus:border-[#4AFFC4]/40"
-            >
-
-                <option value="">
-                    {placeholder}
-                </option>
-
-                {options.map(
-                    (option) => (
-                        <option
-                            key={option}
-                            value={option}
-                        >
-                            {option}
-                        </option>
-                    )
-                )}
-
-            </select>
-
+            {children}
         </div>
     );
 };
-
 
 export default ProblemHistoryFilterPanel;

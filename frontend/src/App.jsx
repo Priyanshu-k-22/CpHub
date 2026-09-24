@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     BrowserRouter,
     Routes,
@@ -30,105 +30,339 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 
 
 const AppLayout = () => {
+
+    const [menuOpen, setMenuOpen] =
+        useState(false);
+
+
     return (
-        <div className="min-h-screen bg-[#060A10] text-[#EDF2F7]">
-            <Navbar />
+        <div className="min-h-screen overflow-x-hidden bg-[#060A10] text-[#EDF2F7]">
 
-            <main>
-                <Routes>
+            {/* =================================================
+                MAIN APPLICATION
+            ================================================= */}
 
-                    {/* Public pages */}
-                    <Route
-                        path="/"
-                        element={<Home />}
-                    />
+            <div
+                className={`
+                    min-h-screen
+                    transition-[margin-right]
+                    duration-300
+                    ease-in-out
+                    ${
+                        menuOpen
+                            ? "mr-[280px]"
+                            : "mr-0"
+                    }
+                `}
+            >
 
-                    <Route
-                        path="/about"
-                        element={<About />}
-                    />
-
-                    <Route
-                        path="/events"
-                        element={<Events />}
-                    />
-
-                    <Route
-                        path="/contests"
-                        element={<Contests />}
-                    />
-
-                    <Route
-                        path="/leaderboard"
-                        element={<Leaderboard />}
-                    />
-
-                    <Route
-                        path="/team"
-                        element={<Team />}
-                    />
-
-                    <Route
-                        path="/achievements"
-                        element={<Achievements />}
-                    />
-
-                    <Route
-                        path="/gallery"
-                        element={<Gallery />}
-                    />
+                <Navbar
+                    menuOpen={menuOpen}
+                    setMenuOpen={setMenuOpen}
+                />
 
 
-                    {/* Authentication */}
-                    <Route
-                        path="/login"
-                        element={<Login />}
-                    />
+                <main>
+                    <Routes>
 
-                    <Route
-                        path="/register"
-                        element={<Register />}
-                    />
-
-
-                    {/* Protected pages */}
-                    <Route element={<ProtectedRoute />}>
+                        {/* ================================
+                            PUBLIC PAGES
+                        ================================= */}
 
                         <Route
-                            path="/dashboard"
-                            element={<UserDashboard />}
+                            path="/"
+                            element={<Home />}
                         />
 
                         <Route
-                            path="/problems"
-                            element={<Problems />}
+                            path="/about"
+                            element={<About />}
                         />
 
                         <Route
-                            path="/problems/history"
-                            element={<ProblemHistory />}
+                            path="/events"
+                            element={<Events />}
                         />
 
                         <Route
-                            path="/problems/:id"
-                            element={<ProblemDetails />}
+                            path="/contests"
+                            element={<Contests />}
                         />
 
-                    </Route>
+                        <Route
+                            path="/leaderboard"
+                            element={<Leaderboard />}
+                        />
 
-                </Routes>
-            </main>
+                        <Route
+                            path="/team"
+                            element={<Team />}
+                        />
+
+                        <Route
+                            path="/achievements"
+                            element={<Achievements />}
+                        />
+
+                        <Route
+                            path="/gallery"
+                            element={<Gallery />}
+                        />
+
+
+                        {/* ================================
+                            AUTHENTICATION
+                        ================================= */}
+
+                        <Route
+                            path="/login"
+                            element={<Login />}
+                        />
+
+                        <Route
+                            path="/register"
+                            element={<Register />}
+                        />
+
+
+                        {/* ================================
+                            PROTECTED PAGES
+                        ================================= */}
+
+                        <Route
+                            element={
+                                <ProtectedRoute />
+                            }
+                        >
+
+                            <Route
+                                path="/dashboard"
+                                element={
+                                    <UserDashboard />
+                                }
+                            />
+
+                            <Route
+                                path="/problems"
+                                element={
+                                    <Problems />
+                                }
+                            />
+
+                            <Route
+                                path="/problems/history"
+                                element={
+                                    <ProblemHistory />
+                                }
+                            />
+
+                            <Route
+                                path="/problems/:id"
+                                element={
+                                    <ProblemDetails />
+                                }
+                            />
+
+                        </Route>
+
+                    </Routes>
+                </main>
+
+            </div>
+
+
+            {/* =================================================
+                RIGHT SIDE MENU
+            ================================================= */}
+
+            <SideMenu
+                menuOpen={menuOpen}
+            />
+
         </div>
     );
 };
 
 
+/* ============================================================
+   SIDE MENU
+============================================================ */
+
+const SideMenu = ({
+    menuOpen
+}) => {
+
+    const menuLinks = [
+        {
+            name: "About",
+            path: "/about",
+        },
+        {
+            name: "Events",
+            path: "/events",
+        },
+        {
+            name: "Leaderboard",
+            path: "/leaderboard",
+        },
+        {
+            name: "Achievements",
+            path: "/achievements",
+        },
+        {
+            name: "Gallery",
+            path: "/gallery",
+        },
+        {
+            name: "Our Team",
+            path: "/team",
+        },
+        {
+            name: "Interview Blogs",
+            path: "/interview-blogs",
+        },
+        {
+            name: "System Design",
+            path: "/system-design",
+        },
+        {
+            name: "Must Know",
+            path: "/must-know",
+        },
+        {
+            name: "Miscellaneous",
+            path: "/miscellaneous",
+        },
+    ];
+
+
+    return (
+        <aside
+            className={`
+                fixed
+                right-0
+                top-0
+                z-[60]
+                h-screen
+                w-[280px]
+                border-l
+                border-[#1C2734]
+                bg-[#080D14]
+                shadow-[-15px_0_35px_rgba(0,0,0,0.25)]
+                transition-transform
+                duration-300
+                ease-in-out
+                ${
+                    menuOpen
+                        ? "translate-x-0"
+                        : "translate-x-full"
+                }
+            `}
+        >
+
+            <div className="flex h-full flex-col">
+
+                {/* =================================================
+                    MENU HEADER
+                ================================================= */}
+
+                <div className="border-b border-[#1C2734] px-5 py-5">
+
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#556275]">
+                        navigation
+                    </p>
+
+                    <h2 className="mt-1 text-xl font-semibold text-white">
+                        More
+                    </h2>
+
+                </div>
+
+
+                {/* =================================================
+                    MENU ITEMS
+                ================================================= */}
+
+                <nav className="flex-1 overflow-y-auto px-3 py-4">
+
+                    <div className="space-y-1">
+
+                        {menuLinks.map((link) => (
+
+                            <a
+                                key={link.path}
+                                href={link.path}
+                                className="
+                                    block
+                                    rounded-lg
+                                    px-3
+                                    py-3
+                                    text-sm
+                                    text-[#AEB9C7]
+                                    transition
+                                    duration-200
+                                    hover:bg-[#111923]
+                                    hover:text-[#4AFFC4]
+                                "
+                            >
+                                {link.name}
+                            </a>
+
+                        ))}
+
+                    </div>
+
+                </nav>
+
+
+                {/* =================================================
+                    LOGOUT
+                ================================================= */}
+
+                <div className="border-t border-[#1C2734] p-4">
+
+                    <button
+                        type="button"
+                        className="
+                            w-full
+                            rounded-lg
+                            border
+                            border-red-500/20
+                            bg-red-500/5
+                            px-4
+                            py-3
+                            text-left
+                            font-mono
+                            text-sm
+                            text-red-400
+                            transition
+                            hover:border-red-500/40
+                            hover:bg-red-500/10
+                        "
+                    >
+                        Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </aside>
+    );
+};
+
+
 export default function App() {
+
     return (
         <AuthProvider>
+
             <BrowserRouter>
+
                 <AppLayout />
+
             </BrowserRouter>
+
         </AuthProvider>
     );
 }

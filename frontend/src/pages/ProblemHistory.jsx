@@ -1,603 +1,471 @@
-import React, {
-    useEffect,
-    useState
-} from "react";
+import { useEffect, useState } from "react";
 
-import {
-    getProblemHistory
-} from "../api/problem.api";
+import { getProblemHistory } from "../api/problem.api";
 
-import ProblemHistoryCard
-    from "../components/problems/ProblemHistory/ProblemHistoryCard";
-
-import ProblemHistoryFilterPanel
-    from "../components/problems/ProblemHistory/ProblemHistoryFilterPanel";
-
-import ProblemHistoryActiveFilters
-    from "../components/problems/ProblemHistory/ProblemHistoryActiveFilters";
-
-import ProblemHistorySort
-    from "../components/problems/ProblemHistory/ProblemHistorySort";
-
-import ProblemPagination
-    from "../components/problems/ProblemHistory/ProblemPagination";
-
-import ProblemHistoryEmpty
-    from "../components/problems/ProblemHistory/ProblemHistoryEmpty";
-
-
-const DEFAULT_FILTERS = {
-    category: "",
-    difficulty: "",
-    topic: "",
-    tag: ""
-};
-
+import ProblemHistoryCard from "../components/problems/ProblemHistory/ProblemHistoryCard";
+import ProblemHistoryFilterPanel from "../components/problems/ProblemHistory/ProblemHistoryFilterPanel";
+import ProblemHistoryActiveFilters from "../components/problems/ProblemHistory/ProblemHistoryActiveFilters";
 
 const ProblemHistory = () => {
-
-    const [search, setSearch] = useState("");
-
-    const [filters, setFilters] = useState(
-        DEFAULT_FILTERS
-    );
-
-    const [sort, setSort] = useState(
-        "newest"
-    );
+    /*
+    |--------------------------------------------------------------------------
+    | State
+    |--------------------------------------------------------------------------
+    */
 
     const [problems, setProblems] = useState([]);
 
-    const [pagination, setPagination] =
-        useState({
-            page: 1,
-            limit: 20,
-            total: 0,
-            totalPages: 0
-        });
+    const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] =
-        useState(true);
+    const [error, setError] = useState("");
 
-    const [error, setError] =
-        useState("");
+    const [search, setSearch] = useState("");
 
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    // --------------------------------
-    // FETCH HISTORY
-    // --------------------------------
+    const [filters, setFilters] = useState({
+        category: "",
+        topic: "",
+        tag: "",
+        difficulty: "",
+    });
 
-    const fetchHistory = async ({
-        selectedSearch = search,
-        selectedFilters = filters,
-        selectedSort = sort,
-        selectedPage = 1
-    } = {}) => {
+    const [sort, setSort] = useState("newest");
 
+    const [pagination, setPagination] = useState({
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0,
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fetch Problems
+    |--------------------------------------------------------------------------
+    */
+
+useEffect(() => {
+    const fetchHistory = async () => {
         try {
-
             setLoading(true);
             setError("");
 
-            const response =
-                await getProblemHistory({
-                    search: selectedSearch,
-                    ...selectedFilters,
-                    sort: selectedSort,
-                    page: selectedPage,
-                    limit: 20
-                });
+            const response = await getProblemHistory({
+                ...filters,
+                search,
+                sort,
+                page: 1,
+                limit: 20,
+            });
 
-
-            setProblems(
-                response.data?.problems || []
+            console.log(
+                "Problem History Response:",
+                response
             );
 
+            // Backend response:
+            // {
+            //     statusCode: 200,
+            //     data: {
+            //         problems: [],
+            //         pagination: {}
+            //     },
+            //     message: "...",
+            //     success: true
+            // }
+
+            const historyProblems = Array.isArray(
+                response?.data?.problems
+            )
+                ? response.data.problems
+                : [];
+
+            setProblems(historyProblems);
 
             setPagination(
-                response.data?.pagination || {
-                    page: selectedPage,
+                response?.data?.pagination || {
+                    page: 1,
                     limit: 20,
-                    total: 0,
-                    totalPages: 0
+                    total: historyProblems.length,
+                    totalPages: 1,
                 }
             );
 
-        } catch (error) {
-
+        } catch (err) {
             console.error(
                 "Failed to fetch problem history:",
-                error
+                err
             );
 
             setError(
-                error.response?.data?.message ||
-                "Failed to load problem history"
+                err?.response?.data?.message ||
+                    err?.message ||
+                    "Failed to load problem history."
             );
 
+            setProblems([]);
+
+            setPagination({
+                page: 1,
+                limit: 20,
+                total: 0,
+                totalPages: 0,
+            });
         } finally {
-
             setLoading(false);
-
         }
     };
 
+    fetchHistory();
+}, [filters, search, sort]);
 
-    // --------------------------------
-    // INITIAL FETCH
-    // --------------------------------
+    /*
+    |--------------------------------------------------------------------------
+    | Clear Filters
+    |--------------------------------------------------------------------------
+    */
 
-    useEffect(() => {
-
-        fetchHistory({
-            selectedSearch: "",
-            selectedFilters:
-                DEFAULT_FILTERS,
-            selectedSort: "newest",
-            selectedPage: 1
+    const clearFilters = () => {
+        setFilters({
+            category: "",
+            topic: "",
+            tag: "",
+            difficulty: "",
         });
-
-    }, []);
-
-
-    // --------------------------------
-    // SEARCH
-    // --------------------------------
-
-    const handleSearch = (
-        value
-    ) => {
-
-        setSearch(value);
-
-        fetchHistory({
-            selectedSearch: value,
-            selectedFilters: filters,
-            selectedSort: sort,
-            selectedPage: 1
-        });
-
     };
 
+    /*
+    |--------------------------------------------------------------------------
+    | Remove Individual Filter
+    |--------------------------------------------------------------------------
+    */
 
-    // --------------------------------
-    // FILTER CHANGE
-    // --------------------------------
-
-    const handleFilterChange = (
-        key,
-        value
-    ) => {
-
-        const newFilters = {
-            ...filters,
-            [key]: value
-        };
-
-
-        // DSA topic doesn't apply to CP.
-
-        if (
-            key === "category" &&
-            value === "CP"
-        ) {
-            newFilters.topic = "";
-        }
-
-
-        setFilters(
-            newFilters
-        );
-
-
-        fetchHistory({
-            selectedSearch: search,
-            selectedFilters:
-                newFilters,
-            selectedSort: sort,
-            selectedPage: 1
-        });
-
+    const removeFilter = (key) => {
+        setFilters((previous) => ({
+            ...previous,
+            [key]: "",
+        }));
     };
 
+    /*
+    |--------------------------------------------------------------------------
+    | Active Filter Count
+    |--------------------------------------------------------------------------
+    */
 
-    // --------------------------------
-    // REMOVE ONE ACTIVE FILTER
-    // --------------------------------
+    const activeFilterCount = Object.values(filters).filter(
+        Boolean
+    ).length;
 
-    const handleRemoveFilter = (
-        key
-    ) => {
+    /*
+    |--------------------------------------------------------------------------
+    | Stats
+    |--------------------------------------------------------------------------
+    */
 
-        const newFilters = {
-            ...filters,
-            [key]: ""
-        };
+    const solvedCount = problems.filter(
+        (problem) =>
+            problem.status === "Solved" ||
+            problem.status === "solved"
+    ).length;
 
+    const attemptedCount = problems.filter(
+        (problem) =>
+            problem.status === "Attempted" ||
+            problem.status === "attempted"
+    ).length;
 
-        setFilters(
-            newFilters
-        );
+    const cpCount = problems.filter(
+        (problem) => problem.category === "CP"
+    ).length;
 
+    const dsaCount = problems.filter(
+        (problem) => problem.category === "DSA"
+    ).length;
 
-        fetchHistory({
-            selectedSearch: search,
-            selectedFilters:
-                newFilters,
-            selectedSort: sort,
-            selectedPage: 1
-        });
-
-    };
-
-
-    // --------------------------------
-    // CLEAR ALL
-    // --------------------------------
-
-    const handleClearFilters = () => {
-
-        setSearch("");
-
-        setFilters(
-            DEFAULT_FILTERS
-        );
-
-        setSort(
-            "newest"
-        );
-
-
-        fetchHistory({
-            selectedSearch: "",
-            selectedFilters:
-                DEFAULT_FILTERS,
-            selectedSort: "newest",
-            selectedPage: 1
-        });
-
-    };
-
-
-    // --------------------------------
-    // SORT
-    // --------------------------------
-
-    const handleSortChange = (
-        newSort
-    ) => {
-
-        setSort(
-            newSort
-        );
-
-
-        fetchHistory({
-            selectedSearch: search,
-            selectedFilters: filters,
-            selectedSort: newSort,
-            selectedPage: 1
-        });
-
-    };
-
-
-    // --------------------------------
-    // PAGINATION
-    // --------------------------------
-
-    const handlePageChange = (
-        newPage
-    ) => {
-
-        fetchHistory({
-            selectedSearch: search,
-            selectedFilters: filters,
-            selectedSort: sort,
-            selectedPage: newPage
-        });
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    };
-
+    /*
+    |--------------------------------------------------------------------------
+    | Render
+    |--------------------------------------------------------------------------
+    */
 
     return (
-        <div className="min-h-screen bg-[#060A10] text-[#EDF2F7]">
+        <div className="min-h-screen w-full bg-[#060a10] text-[#edf2f7]">
+            <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 lg:px-8">
 
-            <main className="mx-auto max-w-6xl px-5 py-5">
+                {/* =========================================================
+                    HEADER
+                ========================================================== */}
 
-                {/* BACK */}
+                <div className="mb-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-                <a
-                    href="/problems"
-                    className="font-mono text-sm text-[#4AFFC4] transition hover:text-white"
-                >
-                    ← back_to_problems
-                </a>
-
-
-                {/* HEADER */}
-
-                <header className="mt-8">
-
-                    <p className="font-mono text-sm text-[#4AFFC4]">
-                        cp/dsa_club/problems/archive
-                    </p>
-
-                    <h1 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
-                        Problem History
-                    </h1>
-
-                    <p className="mt-4 max-w-2xl text-[#AEB9C7]">
-                        Explore previously published daily
-                        problems and revisit what you've
-                        practiced.
-                    </p>
-
-                </header>
-
-
-                {/* FILTER PANEL */}
-
-                <section className="mt-5">
-
-                    <ProblemHistoryFilterPanel
-                        filters={filters}
-                        onChange={
-                            handleFilterChange
-                        }
-                        onClear={
-                            handleClearFilters
-                        }
-                    />
-
-                </section>
-
-
-                {/* ACTIVE FILTERS */}
-
-                <ProblemHistoryActiveFilters
-                    filters={filters}
-                    onRemove={
-                        handleRemoveFilter
-                    }
-                    onClear={
-                        handleClearFilters
-                    }
-                />
-
-
-                {/* RESULTS HEADER */}
-
-                {!loading &&
-                    !error && (
-
-                        <div className="mt-8 flex flex-col gap-4 border-b border-[#1C2734] pb-5 sm:flex-row sm:items-center sm:justify-between">
-
-                            <p className="font-mono text-xs text-[#556275]">
-
-                                {pagination.total}
-
-                                {" "}
-
-                                problem
-                                {pagination.total !== 1
-                                    ? "s"
-                                    : ""}
-
-                                {" "}found
-
+                        <div>
+                            <p className="mb-1 font-mono text-xs uppercase tracking-[0.25em] text-[#4affc4]">
+                                Practice
                             </p>
 
+                            <h1 className="text-2xl font-semibold md:text-3xl">
+                                Problem History
+                            </h1>
 
-                            <ProblemHistorySort
-                                value={sort}
-                                onChange={
-                                    handleSortChange
-                                }
-                            />
-
+                            <p className="mt-1 text-sm text-[#718096]">
+                                Track your coding problems and progress.
+                            </p>
                         </div>
 
-                    )}
+                        {/* Filter Button */}
 
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setIsFilterOpen(true)
+                            }
+                            className="inline-flex w-fit items-center gap-2 rounded-lg border border-[#263445] bg-[#0c131c] px-4 py-2.5 text-sm text-[#cbd5e1] transition hover:border-[#4affc4]/50 hover:text-[#4affc4]"
+                        >
+                            <span className="text-base">
+                                ☷
+                            </span>
 
-                    {/* SEARCH */}
+                            <span>
+                                Filters
+                            </span>
 
-                <section className="mt-10">
+                            {activeFilterCount > 0 && (
+                                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#4affc4] px-1 text-[10px] font-bold text-[#060a10]">
+                                    {activeFilterCount}
+                                </span>
+                            )}
+                        </button>
+                    </div>
+                </div>
 
-                    <div className="relative">
+                {/* =========================================================
+                    STATS
+                ========================================================== */}
 
-                        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-mono text-sm text-[#556275]">
-                            /
+                <div className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-4">
+
+                    {/* Solved */}
+
+                    <div className="rounded-xl border border-[#1c2734] bg-[#0a1018] px-4 py-3">
+                        <p className="text-xs text-[#718096]">
+                            Solved
+                        </p>
+
+                        <p className="mt-1 text-xl font-semibold text-[#4affc4]">
+                            {solvedCount}
+                        </p>
+                    </div>
+
+                    {/* Attempted */}
+
+                    <div className="rounded-xl border border-[#1c2734] bg-[#0a1018] px-4 py-3">
+                        <p className="text-xs text-[#718096]">
+                            Attempted
+                        </p>
+
+                        <p className="mt-1 text-xl font-semibold text-yellow-400">
+                            {attemptedCount}
+                        </p>
+                    </div>
+
+                    {/* CP */}
+
+                    <div className="rounded-xl border border-[#1c2734] bg-[#0a1018] px-4 py-3">
+                        <p className="text-xs text-[#718096]">
+                            CP
+                        </p>
+
+                        <p className="mt-1 text-xl font-semibold text-blue-400">
+                            {cpCount}
+                        </p>
+                    </div>
+
+                    {/* DSA */}
+
+                    <div className="rounded-xl border border-[#1c2734] bg-[#0a1018] px-4 py-3">
+                        <p className="text-xs text-[#718096]">
+                            DSA
+                        </p>
+
+                        <p className="mt-1 text-xl font-semibold text-emerald-400">
+                            {dsaCount}
+                        </p>
+                    </div>
+                </div>
+
+                {/* =========================================================
+                    SEARCH + SORT
+                ========================================================== */}
+
+                <div className="mb-4 flex flex-col gap-2 md:flex-row">
+
+                    {/* Search */}
+
+                    <div className="relative flex-1">
+                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#556275]">
+                            ⌕
                         </span>
 
                         <input
                             type="text"
                             value={search}
                             onChange={(event) =>
-                                handleSearch(
+                                setSearch(
                                     event.target.value
                                 )
                             }
                             placeholder="Search problems..."
-                            className="w-full rounded-xl border border-[#1C2734] bg-[#0A1018] py-4 pl-10 pr-4 font-mono text-sm text-[#EDF2F7] outline-none transition placeholder:text-[#556275] focus:border-[#4AFFC4]/40"
+                            className="w-full rounded-xl border border-[#1c2734] bg-[#0a1018] py-3 pl-10 pr-4 text-sm text-[#edf2f7] outline-none placeholder:text-[#556275] focus:border-[#4affc4]/50"
                         />
-
                     </div>
 
-                </section>
+                    {/* Sort */}
 
+                    <select
+                        value={sort}
+                        onChange={(event) =>
+                            setSort(
+                                event.target.value
+                            )
+                        }
+                        className="rounded-xl border border-[#1c2734] bg-[#0a1018] px-4 py-3 text-sm text-[#aeb9c7] outline-none focus:border-[#4affc4]/50"
+                    >
+                        <option value="newest">
+                            Newest First
+                        </option>
 
-                {/* LOADING */}
+                        <option value="oldest">
+                            Oldest First
+                        </option>
+                    </select>
+                </div>
 
-                {loading && (
-                    <HistoryLoading />
+                {/* =========================================================
+                    ACTIVE FILTERS
+                ========================================================== */}
+
+                <ProblemHistoryActiveFilters
+                    filters={filters}
+                    onRemove={removeFilter}
+                    onClear={clearFilters}
+                />
+
+                {/* =========================================================
+                    ERROR
+                ========================================================== */}
+
+                {error && (
+                    <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-sm text-red-400">
+                        {error}
+                    </div>
                 )}
 
+                {/* =========================================================
+                    LOADING
+                ========================================================== */}
 
-                {/* ERROR */}
+                {loading ? (
+                    <div className="flex min-h-[300px] items-center justify-center">
+                        <div className="text-sm text-[#718096]">
+                            Loading problem history...
+                        </div>
+                    </div>
+                ) : problems.length === 0 ? (
+
+                    /* =====================================================
+                       EMPTY STATE
+                    ====================================================== */
+
+                    <div className="rounded-xl border border-dashed border-[#263445] bg-[#0a1018] px-6 py-16 text-center">
+
+                        <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#111923] text-[#718096]">
+                            ?
+                        </div>
+
+                        <p className="text-sm text-[#718096]">
+                            No problems found.
+                        </p>
+
+                        {(search ||
+                            activeFilterCount > 0) && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearch("");
+                                    clearFilters();
+                                }}
+                                className="mt-3 text-sm text-[#4affc4] hover:underline"
+                            >
+                                Clear search and filters
+                            </button>
+                        )}
+                    </div>
+                ) : (
+
+                    /* =====================================================
+                       PROBLEM LIST
+                    ====================================================== */
+
+                    <div className="space-y-2">
+
+                        {problems.map(
+                            (problem, index) => (
+                                <ProblemHistoryCard
+                                    key={
+                                        problem._id ||
+                                        problem.id ||
+                                        index
+                                    }
+                                    problem={problem}
+                                />
+                            )
+                        )}
+                    </div>
+                )}
+
+                {/* =========================================================
+                    PAGINATION INFO
+                ========================================================== */}
 
                 {!loading &&
-                    error && (
-
-                        <HistoryError
-                            message={error}
-                            onRetry={() =>
-                                fetchHistory({
-                                    selectedSearch:
-                                        search,
-                                    selectedFilters:
-                                        filters,
-                                    selectedSort:
-                                        sort,
-                                    selectedPage:
-                                        pagination.page
-                                })
-                            }
-                        />
-
-                    )}
-
-
-                {/* RESULTS */}
-
-                {!loading &&
-                    !error &&
                     problems.length > 0 && (
+                        <div className="mt-5 flex justify-between text-xs text-[#556275]">
 
-                        <section className="mt-5 space-y-3">
+                            <span>
+                                Showing{" "}
+                                {problems.length}{" "}
+                                of{" "}
+                                {pagination.total}
+                            </span>
 
-                            {problems.map(
-                                (problem) => (
-
-                                    <ProblemHistoryCard
-                                        key={
-                                            problem._id
-                                        }
-                                        problem={
-                                            problem
-                                        }
-                                    />
-
-                                )
-                            )}
-
-                        </section>
-
+                            <span>
+                                Page{" "}
+                                {pagination.page}{" "}
+                                of{" "}
+                                {pagination.totalPages}
+                            </span>
+                        </div>
                     )}
-
-
-                {/* EMPTY */}
-
-                {!loading &&
-                    !error &&
-                    problems.length === 0 && (
-
-                        <section className="mt-5">
-
-                            <ProblemHistoryEmpty
-                                category={
-                                    filters.category
-                                }
-                            />
-
-                        </section>
-
-                    )}
-
-
-                {/* PAGINATION */}
-
-                {!loading &&
-                    !error &&
-                    problems.length > 0 && (
-
-                        <ProblemPagination
-                            page={
-                                pagination.page
-                            }
-                            totalPages={
-                                pagination.totalPages
-                            }
-                            onPageChange={
-                                handlePageChange
-                            }
-                        />
-
-                    )}
-
-            </main>
-
-        </div>
-    );
-};
-
-
-// --------------------------------
-// LOADING
-// --------------------------------
-
-const HistoryLoading = () => {
-
-    return (
-
-        <div className="flex min-h-[300px] items-center justify-center">
-
-            <div className="flex items-center gap-3">
-
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#4AFFC4] border-t-transparent" />
-
-                <span className="font-mono text-sm text-[#AEB9C7]">
-                    loading_history...
-                </span>
-
             </div>
 
-        </div>
+            {/* =============================================================
+                FILTER DRAWER
+            ============================================================= */}
 
+            <ProblemHistoryFilterPanel
+                open={isFilterOpen}
+                filters={filters}
+                onChange={setFilters}
+                onClose={() =>
+                    setIsFilterOpen(false)
+                }
+                onClear={clearFilters}
+            />
+        </div>
     );
 };
-
-
-// --------------------------------
-// ERROR
-// --------------------------------
-
-const HistoryError = ({
-    message,
-    onRetry
-}) => {
-
-    return (
-
-        <div className="mt-5 rounded-xl border border-red-500/30 bg-red-500/5 p-6">
-
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-                <p className="font-mono text-sm text-red-400">
-                    error: {message}
-                </p>
-
-                <button
-                    type="button"
-                    onClick={onRetry}
-                    className="rounded-lg border border-red-500/30 px-4 py-2 font-mono text-xs text-red-400 transition hover:bg-red-500/10"
-                >
-                    retry
-                </button>
-
-            </div>
-
-        </div>
-
-    );
-};
-
 
 export default ProblemHistory;
