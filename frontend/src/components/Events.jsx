@@ -37,7 +37,7 @@ const EventCard = ({ e }) => (
 
 const Events = () => (
   <section id="events" className="border-b border-[#1C2734] bg-[#080D14]">
-    <Container className="py-20 lg:py-24">
+    <Container className="py-5 lg:py-5">
       <SectionLabel index={2} total={10} title="Upcoming Events" />
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {EVENTS.map((e) => (

@@ -13,7 +13,7 @@ const JOIN_STEPS = [
 const Join = () => (
   <section id="join" className="relative overflow-hidden border-b border-[#1C2734] bg-[#060A10]">
     <div className="grid-bg absolute inset-0 opacity-30" />
-    <Container className="relative py-20 lg:py-24">
+    <Container className="relative py-5 lg:py-5">
       <SectionLabel index={9} total={10} title="Join Us" />
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1fr]">
         <div>

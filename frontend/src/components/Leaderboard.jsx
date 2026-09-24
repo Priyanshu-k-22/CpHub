@@ -17,7 +17,7 @@ const Leaderboard = () => {
 
   return (
     <section id="leaderboard" className="border-b border-[#1C2734] bg-[#080D14]">
-      <Container className="py-20 lg:py-24">
+      <Container className="py-5 lg:py-5">
         <SectionLabel index={4} total={10} title="Contest Leaderboard" />
         <div className="mb-6 flex flex-wrap items-center gap-2">
           <Filter size={14} className="text-[#556275]" />

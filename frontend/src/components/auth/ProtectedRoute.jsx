@@ -1,31 +1,113 @@
 import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext.jsx";
+import {
+    Navigate,
+    Outlet,
+    useLocation,
+} from "react-router-dom";
+
+import {
+    useAuth,
+} from "../../context/AuthContext";
+
 
 const ProtectedRoute = () => {
-    const { user, loading } = useAuth();
-    const location = useLocation();
+
+    const {
+        user,
+        loading,
+    } = useAuth();
+
+    const location =
+        useLocation();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | AUTH INITIALIZATION
+    |--------------------------------------------------------------------------
+    */
 
     if (loading) {
+
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#060A10]">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#4AFFC4] border-t-transparent" />
+            <div className="
+                flex
+                min-h-screen
+                items-center
+                justify-center
+                bg-[#060A10]
+            ">
+
+                <div className="
+                    flex
+                    flex-col
+                    items-center
+                    gap-3
+                ">
+
+                    <div className="
+                        h-6
+                        w-6
+                        animate-spin
+                        rounded-full
+                        border-2
+                        border-[#1C2734]
+                        border-t-[#4AFFC4]
+                    " />
+
+                    <p className="
+                        font-mono
+                        text-xs
+                        text-[#556275]
+                    ">
+                        checking_session...
+                    </p>
+
+                </div>
+
             </div>
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOT LOGGED IN
+    |--------------------------------------------------------------------------
+    */
+
     if (!user) {
+
         return (
             <Navigate
                 to="/login"
                 replace
-                state={{ from: location }}
+                state={{
+                    from: {
+                        pathname:
+                            location.pathname,
+
+                        search:
+                            location.search,
+
+                        hash:
+                            location.hash,
+                    },
+                }}
             />
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGGED IN
+    |--------------------------------------------------------------------------
+    */
+
     return <Outlet />;
 };
+
 
 export default ProtectedRoute;

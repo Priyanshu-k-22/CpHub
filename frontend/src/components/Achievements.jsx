@@ -13,7 +13,7 @@ const initials = (name) =>
 
 const Achievements = () => (
   <section id="achievements" className="relative overflow-hidden border-b border-[#1C2734] bg-[#080D14]">
-    <Container className="py-20 lg:py-24">
+    <Container className="py-5 lg:py-5">
       <SectionLabel index={6} total={10} title="Achievements" />
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ACHIEVEMENTS.map(({ icon: Icon, label, tone }) => (

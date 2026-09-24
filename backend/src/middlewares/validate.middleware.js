@@ -1,26 +1,29 @@
 const ApiError = require("../utils/ApiError");
-const validate = (schema) => {
+
+const validate = (
+    schema,
+    source = "body"
+) => {
     return (req, res, next) => {
-        const result = schema.safeParse(req.body);
+
+        const result = schema.safeParse(
+            req[source]
+        );
 
         if (!result.success) {
-            const errors = {};
-            result.error.issues.forEach((issue) => {
-                const field = issue.path[0];
-                if(field && !errors[field]){
-                    errors[field] = issue.message;
-                }
-            });
-            return next(
-                new ApiError(
-                    400,
-                    "Validation failed",
-                    errors
-                )
+
+            const message =
+                result.error.issues
+                    .map((issue) => issue.message)
+                    .join(", ");
+
+            throw new ApiError(
+                400,
+                message
             );
         }
 
-        req.body = result.data;
+        req[source] = result.data;
 
         next();
     };

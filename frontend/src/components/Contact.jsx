@@ -11,7 +11,7 @@ const CONTACT_ITEMS = [
 
 const Contact = () => (
   <section id="contact" className="bg-[#080D14]">
-    <Container className="py-20 lg:py-24">
+    <Container className="py-5 lg:py-5">
       <SectionLabel index={10} total={10} title="Contact" />
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {CONTACT_ITEMS.map(({ icon: Icon, label, value }) => (

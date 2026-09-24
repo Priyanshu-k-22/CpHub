@@ -1,6 +1,5 @@
 import React from "react";
 
-import Navbar from "../components/Navbar.jsx";
 import Hero from "../components/Hero.jsx";
 import ClubIntro from "../components/ClubIntro.jsx";
 import Vision from "../components/Vision.jsx";
@@ -18,7 +17,6 @@ const Home = () => {
         <div className="min-h-screen bg-[#060A10] font-body text-[#EDF2F7] antialiased">
             <CodeBackground variant="home"/>
             <div className="relative z-10">
-                <Navbar />
 
             <main>
                 <Hero />

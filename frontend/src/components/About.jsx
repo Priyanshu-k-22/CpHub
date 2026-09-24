@@ -12,7 +12,7 @@ const PRINCIPLES = [
 
 const About = () => (
   <section id="about" className="border-b border-[#1C2734] bg-[#080D14]">
-    <Container className="py-20 lg:py-24">
+    <Container className="py-5 lg:py-5">
       <SectionLabel index={8} total={10} title="About the Club" />
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1fr]">
         <div className="space-y-4 font-body text-[15px] leading-relaxed text-[#AEB9C7]">

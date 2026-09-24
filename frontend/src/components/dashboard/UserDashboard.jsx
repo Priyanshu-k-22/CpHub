@@ -6,7 +6,7 @@ const UserDashboard = () => {
 
     return (
         <div className="min-h-screen bg-[#060A10] text-[#EDF2F7]">
-            <div className="mx-auto max-w-7xl px-5 py-20">
+            <div className="mx-auto max-w-7xl px-5 py-5">
 
                 {/* Header */}
                 <div className="border-b border-[#1C2734] pb-8">

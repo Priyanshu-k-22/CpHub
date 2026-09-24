@@ -44,7 +44,7 @@ const MemberCard = ({ m }) => (
 
 const OurTeam = () => (
   <section id="team" className="border-b border-[#1C2734] bg-[#060A10]">
-    <Container className="py-20 lg:py-24">
+    <Container className="py-5 lg:py-5">
       <SectionLabel index={5} total={10} title="Our Team" />
 
       {LEADERSHIP.map((p) => (

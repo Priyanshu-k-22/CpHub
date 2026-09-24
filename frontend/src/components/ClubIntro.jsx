@@ -7,7 +7,7 @@ const ClubIntro = () => {
   const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   return (
     <section className="border-b border-[#1C2734] bg-[#080D14]">
-      <Container className="grid grid-cols-1 gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-20">
+      <Container className="grid grid-cols-1 gap-10 py-3 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-20">
         <div>
           <span className="font-mono text-[13px] text-[#4AFFC4]">// who_we_are</span>
           <h3 className="mt-3 font-display text-3xl font-semibold leading-tight text-[#EDF2F7] sm:text-4xl">

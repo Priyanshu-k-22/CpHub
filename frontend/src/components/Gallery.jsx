@@ -12,7 +12,7 @@ const Gallery = () => {
 
   return (
     <section id="gallery" className="border-b border-[#1C2734] bg-[#060A10]">
-      <Container className="py-20 lg:py-24">
+      <Container className="py-5 lg:py-5">
         <SectionLabel index={7} total={10} title="Gallery" />
         <div className="mb-6 flex flex-wrap gap-2">
           {cats.map((c) => (

@@ -54,7 +54,7 @@ const Contests = () => {
   ];
   return (
     <section id="contests" className="border-b border-[#1C2734] bg-[#060A10]">
-      <Container className="py-20 lg:py-24">
+      <Container className="py-5 lg:py-5">
         <SectionLabel index={3} total={10} title="Contests" />
         <div className="mb-8 inline-flex rounded-md border border-[#1C2734] p-1 font-mono text-[12.5px]">
           {tabs.map((t) => (

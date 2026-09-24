@@ -1,6 +1,5 @@
 import React from "react";
 
-import Navbar from "../components/Navbar.jsx";
 import AboutSection from "../components/About.jsx";
 import Footer from "../components/Footer.jsx";
 import CodeBackground from "../components/background/CodeBackground.jsx";
@@ -11,7 +10,6 @@ const About = () => {
 
             <CodeBackground variant="about"/>
             <div className="relative z-10">
-                <Navbar />
 
                 <main>
                     <AboutSection />

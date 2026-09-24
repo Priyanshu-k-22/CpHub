@@ -1,96 +1,294 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Terminal } from "lucide-react";
-import Container from "../../ui/Container.jsx";
 
-const AuthLayout = ({ children, mode }) => {
-  const isLogin = mode === "login";
 
-  return (
-    <div className="min-h-screen bg-[#060A10] text-[#EDF2F7]">
-      {/* Background */}
-      <div className="pointer-events-none fixed inset-0 grid-bg opacity-60" />
+const AuthLayout = ({ children }) => {
 
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-[-180px] h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-[#4AFFC4]/[0.025] blur-3xl" />
-      </div>
+    return (
+        <div className="
+            relative
+            min-h-screen
+            overflow-hidden
+            bg-[#060A10]
+            text-[#EDF2F7]
+        ">
 
-      {/* Header */}
-      <header className="relative z-10 border-b border-[#1C2734] bg-[#060A10]/80 backdrop-blur">
-        <Container className="flex h-16 items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-2 font-mono text-[15px] font-bold text-[#EDF2F7]"
-          >
-            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-[#2A3341] bg-[#0C1420] text-[#4AFFC4]">
-              <Terminal size={16} strokeWidth={2.5} />
-            </span>
+            {/* =========================================================
+                BACKGROUND GRID
+            ========================================================= */}
 
-            <span>
-              cp<span className="text-[#4AFFC4]">/</span>dsa
-              <span className="text-[#556275]">_club</span>
-            </span>
-          </Link>
+            <div
+                className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    opacity-[0.16]
+                    [background-image:linear-gradient(rgba(28,39,52,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(28,39,52,0.5)_1px,transparent_1px)]
+                    [background-size:42px_42px]
+                "
+            />
 
-          <div className="font-mono text-[11px] text-[#556275]">
-            {isLogin ? "AUTH / LOGIN" : "AUTH / REGISTER"}
-          </div>
-        </Container>
-      </header>
 
-      {/* Main */}
-      <main className="relative z-10 flex min-h-[calc(100vh-64px)] items-center py-12 md:py-16">
-        <Container>
-          <div className="mx-auto w-full max-w-[460px]">
-            {/* Terminal heading */}
-            <div className="mb-7">
-              <div className="mb-3 flex items-center gap-2 font-mono text-[11px] text-[#4AFFC4]">
-                <span>~/cphub</span>
-                <span className="text-[#556275]">→</span>
-                <span className="text-[#AEB9C7]">
-                  {isLogin ? "login" : "register"}
-                </span>
-                <span className="cursor-blink text-[#4AFFC4]">_</span>
-              </div>
+            {/* =========================================================
+                CENTER GLOW
+            ========================================================= */}
 
-              <h1 className="font-body text-3xl font-bold tracking-tight text-[#EDF2F7] md:text-4xl">
-                {isLogin ? "Welcome back." : "Join CpHub."}
-              </h1>
+            <div
+                className="
+                    pointer-events-none
+                    absolute
+                    left-1/2
+                    top-1/2
+                    h-[600px]
+                    w-[600px]
+                    -translate-x-1/2
+                    -translate-y-1/2
+                    rounded-full
+                    bg-[#4AFFC4]/[0.035]
+                    blur-[140px]
+                "
+            />
 
-              <p className="mt-3 max-w-md text-sm leading-6 text-[#7F8B9C]">
-                {isLogin
-                  ? "Sign in to continue your competitive programming journey."
-                  : "Create your account and start solving, competing and improving."}
-              </p>
-            </div>
 
-            {/* Auth card */}
-            <div className="scanline relative overflow-hidden rounded-lg border border-[#1C2734] bg-[#080D14]">
-              {/* Terminal bar */}
-              <div className="flex h-10 items-center border-b border-[#1C2734] px-4">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#24303F]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#24303F]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#4AFFC4]/50" />
+            {/* =========================================================
+                TOP LEFT BRAND
+            ========================================================= */}
+
+            <div className="
+                absolute
+                left-6
+                top-6
+                z-20
+                flex
+                items-center
+                gap-2
+            ">
+
+                <div className="
+                    flex
+                    h-8
+                    w-8
+                    items-center
+                    justify-center
+                    rounded-md
+                    border
+                    border-[#4AFFC4]/30
+                    bg-[#4AFFC4]/5
+                    font-mono
+                    text-xs
+                    font-bold
+                    text-[#4AFFC4]
+                ">
+                    &gt;_
                 </div>
 
-                <span className="ml-auto font-mono text-[10px] text-[#556275]">
-                  cphub.auth
-                </span>
-              </div>
 
-              <div className="p-6 md:p-8">{children}</div>
+                <div>
+
+                    <p className="
+                        font-mono
+                        text-sm
+                        font-bold
+                        text-[#EDF2F7]
+                    ">
+                        CpHub
+                    </p>
+
+                    <p className="
+                        font-mono
+                        text-[8px]
+                        uppercase
+                        tracking-widest
+                        text-[#556275]
+                    ">
+                        competitive programming
+                    </p>
+
+                </div>
+
             </div>
 
-            {/* Bottom text */}
-            <div className="mt-7 text-center font-mono text-[10px] tracking-wider text-[#3E4A5B]">
-              &lt; solve. compete. improve. /&gt;
+
+            {/* =========================================================
+                TOP RIGHT TERMINAL
+            ========================================================= */}
+
+            <div className="
+                absolute
+                right-6
+                top-6
+                hidden
+                font-mono
+                text-[9px]
+                leading-5
+                text-[#556275]
+                opacity-60
+                lg:block
+            ">
+
+                <div>
+                    cphub@contestant:~$ auth
+                </div>
+
+                <div>
+                    status:
+                    <span className="text-[#4AFFC4]">
+                        {" "}online
+                    </span>
+                </div>
+
             </div>
-          </div>
-        </Container>
-      </main>
-    </div>
-  );
+
+
+            {/* =========================================================
+                BACKGROUND CODE
+            ========================================================= */}
+
+            <div className="
+                pointer-events-none
+                absolute
+                inset-0
+                hidden
+                overflow-hidden
+                lg:block
+            ">
+
+                <pre className="
+                    absolute
+                    left-[5%]
+                    top-[20%]
+                    font-mono
+                    text-[10px]
+                    leading-5
+                    text-[#556275]
+                    opacity-30
+                ">
+{`#include <cphub.h>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+vector<int> problems;
+
+sort(
+    problems.begin(),
+    problems.end()
+);`}
+                </pre>
+
+
+                <pre className="
+                    absolute
+                    right-[6%]
+                    top-[24%]
+                    font-mono
+                    text-[10px]
+                    leading-5
+                    text-[#556275]
+                    opacity-30
+                ">
+{`Contest contest;
+
+contest.start();
+
+while (!solved) {
+    practice();
+    try_again();
+}
+
+submit();`}
+                </pre>
+
+
+                <pre className="
+                    absolute
+                    bottom-[18%]
+                    left-[8%]
+                    font-mono
+                    text-[10px]
+                    leading-5
+                    text-[#556275]
+                    opacity-30
+                ">
+{`for (auto problem : contest) {
+    solve(problem);
+    submit(problem);
+}
+
+// consistency
+// beats
+// motivation`}
+                </pre>
+
+
+                <pre className="
+                    absolute
+                    bottom-[18%]
+                    right-[8%]
+                    font-mono
+                    text-[10px]
+                    leading-5
+                    text-[#556275]
+                    opacity-30
+                ">
+{`if (accepted) {
+    improve();
+    repeat();
+}
+
+rating++;
+skills++;`}
+                </pre>
+
+            </div>
+
+
+            {/* =========================================================
+                CONTENT
+            ========================================================= */}
+
+            <main className="
+                relative
+                z-10
+                flex
+                min-h-screen
+                items-center
+                justify-center
+                px-4
+                py-24
+            ">
+
+                {children}
+
+            </main>
+
+
+            {/* =========================================================
+                FOOTER
+            ========================================================= */}
+
+            <div className="
+                absolute
+                bottom-5
+                left-0
+                right-0
+                z-20
+                text-center
+            ">
+
+                <p className="
+                    font-mono
+                    text-[9px]
+                    text-[#3E4A5B]
+                ">
+                    solve · learn · compete · improve
+                </p>
+
+            </div>
+
+        </div>
+    );
 };
+
 
 export default AuthLayout;

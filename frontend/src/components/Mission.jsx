@@ -13,7 +13,7 @@ const MISSION = [
 
 const Mission = () => (
   <section className="border-b border-[#1C2734] bg-[#080D14]">
-    <Container className="py-20 lg:py-24">
+    <Container className="py-5 lg:py-5">
       <SectionLabel index={1} total={10} title="Mission" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {MISSION.map(({ icon: Icon, title, desc }) => (
