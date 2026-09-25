@@ -15,6 +15,7 @@ import Leaderboard from "./pages/Leaderboard.jsx";
 import Team from "./pages/Team.jsx";
 import Achievements from "./pages/Achievements.jsx";
 import Gallery from "./pages/Gallery.jsx";
+import CP from "./pages/CP.jsx";
 
 import Problems from "./pages/Problems.jsx";
 import ProblemDetails from "./pages/ProblemDetails.jsx";
@@ -161,6 +162,11 @@ const AppLayout = () => {
                                 element={
                                     <ProblemDetails />
                                 }
+                            />
+
+                            <Route
+                                path="/cp"
+                                element={<CP />}
                             />
 
                         </Route>
