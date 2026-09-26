@@ -28,6 +28,10 @@ import UserDashboard from "./components/dashboard/UserDashboard.jsx";
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
+import DSARoadmap from "./pages/DSARoadmap.jsx";
+import DSAPractice from "./pages/DSAPractice.jsx";
+import DSA from "./pages/DSA.jsx";
+import DSASheets from "./pages/DSASheets.jsx";
 
 
 const AppLayout = () => {
@@ -49,10 +53,9 @@ const AppLayout = () => {
                     transition-[margin-right]
                     duration-300
                     ease-in-out
-                    ${
-                        menuOpen
-                            ? "mr-[280px]"
-                            : "mr-0"
+                    ${menuOpen
+                        ? "mr-[280px]"
+                        : "mr-0"
                     }
                 `}
             >
@@ -169,6 +172,28 @@ const AppLayout = () => {
                                 element={<CP />}
                             />
 
+                            <Route
+                                path="/dsa/roadmap"
+                                element={<DSARoadmap />}
+                            />
+
+
+
+                            <Route
+                                path="/dsa/practice"
+                                element={<DSAPractice />}
+                            />
+
+                            <Route
+                                path="/dsa"
+                                element={<DSA />}
+                            />
+
+                            <Route
+                                path="/dsa/sheets"
+                                element={<DSASheets />}
+                            />
+
                         </Route>
 
                     </Routes>
@@ -239,6 +264,8 @@ const SideMenu = ({
             name: "Miscellaneous",
             path: "/miscellaneous",
         },
+
+        { path: "/dsa/roadmap", label: "DSA" },
     ];
 
 
@@ -258,10 +285,9 @@ const SideMenu = ({
                 transition-transform
                 duration-300
                 ease-in-out
-                ${
-                    menuOpen
-                        ? "translate-x-0"
-                        : "translate-x-full"
+                ${menuOpen
+                    ? "translate-x-0"
+                    : "translate-x-full"
                 }
             `}
         >
