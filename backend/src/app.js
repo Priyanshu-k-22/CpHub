@@ -6,6 +6,8 @@ const authRoutes = require("./modules/auth/auth.routes");
 const userRoutes = require("./modules/user/user.routes");
 const problemRoutes = require("./modules/problem/problem.routes");
 const contestRoutes = require("./modules/contest/contest.routes");
+const cpSheetRoutes = require("./modules/cpSheet/cpSheet.routes.js");
+
 
 const cors = require("cors");
 
@@ -25,6 +27,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/contests",contestRoutes);
+app.use("/api/cp-sheet",cpSheetRoutes);
 
 app.use(errorHandler)
 

@@ -1,0 +1,170 @@
+const {
+    getCPSheet,
+    markProblemComplete,
+    markProblemIncomplete,
+} = require("./cpSheet.service.js");
+
+const asyncHandler = require("../../middlewares/asyncHandler.js");
+const ApiError  = require("../../utils/ApiError.js");
+
+
+/*
+|--------------------------------------------------------------------------
+| Get CP Sheet
+|--------------------------------------------------------------------------
+| GET /api/cp-sheet
+| GET /api/cp-sheet?rating=800
+|
+*/
+
+const getCPSheetController = asyncHandler(
+    async (req, res) => {
+        const userId = req.user?._id;
+
+        if (!userId) {
+            throw new ApiError(
+                401,
+                "Unauthorized"
+            );
+        }
+
+        const {
+            rating,
+            sheet = "beginner-cp",
+        } = req.query;
+
+        const allowedRatings = [
+            800,
+            900,
+            1000,
+            1100,
+            1200,
+        ];
+
+        let parsedRating;
+
+        if (rating !== undefined) {
+            parsedRating = Number(rating);
+
+            if (
+                !allowedRatings.includes(
+                    parsedRating
+                )
+            ) {
+                throw new ApiError(
+                    400,
+                    "Invalid CP rating"
+                );
+            }
+        }
+
+        const data = await getCPSheet({
+            userId,
+            rating: parsedRating,
+            sheet,
+        });
+
+        return res.status(200).json({
+            statusCode: 200,
+            data,
+            message:
+                "CP sheet fetched successfully",
+            success: true,
+        });
+    }
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| Mark Problem Complete
+|--------------------------------------------------------------------------
+| PATCH /api/cp-sheet/:problemId/complete
+|
+*/
+
+const markProblemCompleteController =
+    asyncHandler(async (req, res) => {
+        const userId = req.user?._id;
+
+        if (!userId) {
+            throw new ApiError(
+                401,
+                "Unauthorized"
+            );
+        }
+
+        const { problemId } = req.params;
+
+        if (!problemId) {
+            throw new ApiError(
+                400,
+                "Problem ID is required"
+            );
+        }
+
+        const progress =
+            await markProblemComplete({
+                userId,
+                problemId,
+            });
+
+        return res.status(200).json({
+            statusCode: 200,
+            data: progress,
+            message:
+                "Problem marked as completed",
+            success: true,
+        });
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Mark Problem Incomplete
+|--------------------------------------------------------------------------
+| PATCH /api/cp-sheet/:problemId/incomplete
+|
+*/
+
+const markProblemIncompleteController =
+    asyncHandler(async (req, res) => {
+        const userId = req.user?._id;
+
+        if (!userId) {
+            throw new ApiError(
+                401,
+                "Unauthorized"
+            );
+        }
+
+        const { problemId } = req.params;
+
+        if (!problemId) {
+            throw new ApiError(
+                400,
+                "Problem ID is required"
+            );
+        }
+
+        const progress =
+            await markProblemIncomplete({
+                userId,
+                problemId,
+            });
+
+        return res.status(200).json({
+            statusCode: 200,
+            data: progress,
+            message:
+                "Problem marked as incomplete",
+            success: true,
+        });
+    });
+
+
+module.exports = {
+    getCPSheetController,
+    markProblemCompleteController,
+    markProblemIncompleteController,
+};
